@@ -40,10 +40,10 @@
   <ItemGroup />
   <ItemGroup>
     <Compile Include="gyroOGL.cs" />
-    <Compile Include="GyroForm.cs">
+    <Compile Include="Forms\GyroForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GyroForm.Designer.cs">
+    <Compile Include="Forms\GyroForm.Designer.cs">
       <DependentUpon>GyroForm.cs</DependentUpon>
     </Compile>
     <Compile Include="OpenGL_API\GLU.cs" />
@@ -59,7 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="GyroForm.resx">
+    <EmbeddedResource Include="Forms\GyroForm.resx">
       <DependentUpon>GyroForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
