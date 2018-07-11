@@ -56,7 +56,6 @@ namespace OpenGL
 
 		private void drawAxes()
 		{
-			//axes
 			GL.glBegin(GL.GL_LINES);
 			//x  RED
 			GL.glColor3f(1.0f, 0.0f, 0.0f);
