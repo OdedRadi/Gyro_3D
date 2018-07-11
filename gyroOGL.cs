@@ -51,7 +51,7 @@ namespace OpenGL
 			drawAxes();
 			drawCube();
 			drawPrizme();
-			drawTriangle();
+			drawTriangular();
 		}
 
 		private void drawAxes()
