@@ -260,7 +260,7 @@ namespace OpenGL
 			GL.glEnd();
 		}
 
-		private void drawTriangle()
+		private void drawTriangular()
 		{
 			// TODO
 		}
