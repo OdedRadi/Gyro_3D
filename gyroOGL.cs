@@ -5,15 +5,23 @@ namespace OpenGL
 {
 	class gyroOGL
 	{
+		private enum eAxis
+		{
+			X,
+			Y,
+			Z
+		}
+
 		private Control m_control;
 
 		private float m_angle = 0.0f;
 		private int Width { get; set; }
 		private int Height { get; set; }
 
-		private float m_cubeLength = 1.0f;
-		private float m_prizmeWidth = 0.2f;
-		private float m_prizeHeight = 0.7f;
+		private float m_cubeHeight = 1.0f;
+		private float m_cubeWidth = 1.0f;
+		private float m_prismHeight = 0.7f;
+		private float m_prismWidth = 0.2f;
 
 		public gyroOGL(Control control)
 		{
@@ -46,33 +54,20 @@ namespace OpenGL
 			get { return m_uint_RC; }
 		}
 
-
-		private enum eAxis
-		{
-			X,
-			Y,
-			Z
-		}
-
-		float cubeHeight = 1.0f;
-		float cubeWidth = 1.0f;
-		float prizmeHeight = 0.7f;
-		float prizmeWidth = 0.2f;
-
 		protected void DrawAll()
 		{
 			// drawing the axes, the cube and the triangular from the current position
 			drawAxes();
 			drawGyroCube();
 			drawGyroTriangular();
-			
-			// translate the position to draw the prizme on the top of the cube
-			float xPrizmeOrigin = (cubeWidth / 2 - prizmeWidth / 2);
-			float yPrizmeOrigin = (cubeWidth / 2 - prizmeWidth / 2);
-			float zPrizmeOrigin = cubeHeight;
 
-			GL.glTranslatef(xPrizmeOrigin, yPrizmeOrigin, zPrizmeOrigin);
-			drawGyroPrizme();
+			// translate the position to draw the prism on the top of the cube
+			float xPrismOrigin = (m_cubeWidth / 2 - m_prismWidth / 2);
+			float yPrismOrigin = (m_cubeWidth / 2 - m_prismWidth / 2);
+			float zPrismOrigin = m_cubeHeight;
+
+			GL.glTranslatef(xPrismOrigin, yPrismOrigin, zPrismOrigin);
+			drawGyroPrism();
 		}
 
 		private void drawAxes()
@@ -95,11 +90,11 @@ namespace OpenGL
 			GL.glEnd();
 		}
 
-		private void drawGyroPrizme()
+		private void drawGyroPrism()
 		{
 			GL.glBegin(GL.GL_QUADS);
 
-			drawGenericCube(prizmeWidth, prizmeHeight);
+			drawGenericCube(m_prismWidth, m_prismHeight);
 
 			GL.glEnd();
 		}
@@ -108,7 +103,7 @@ namespace OpenGL
 		{
 			GL.glBegin(GL.GL_QUADS);
 
-			drawGenericCube(cubeHeight, cubeWidth);
+			drawGenericCube(m_cubeHeight, m_cubeWidth);
 
 			GL.glEnd();
 		}
