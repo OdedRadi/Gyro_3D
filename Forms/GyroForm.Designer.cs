@@ -43,7 +43,7 @@
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(171, 337);
+			this.label1.Location = new System.Drawing.Point(171, 357);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(58, 13);
 			this.label1.TabIndex = 11;
@@ -54,11 +54,11 @@
 			this.hScrollBarDelay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.hScrollBarDelay.LargeChange = 1;
-			this.hScrollBarDelay.Location = new System.Drawing.Point(232, 336);
+			this.hScrollBarDelay.Location = new System.Drawing.Point(232, 356);
 			this.hScrollBarDelay.Maximum = 200;
 			this.hScrollBarDelay.Minimum = 1;
 			this.hScrollBarDelay.Name = "hScrollBarDelay";
-			this.hScrollBarDelay.Size = new System.Drawing.Size(62, 14);
+			this.hScrollBarDelay.Size = new System.Drawing.Size(82, 14);
 			this.hScrollBarDelay.TabIndex = 10;
 			this.hScrollBarDelay.Value = 10;
 			this.hScrollBarDelay.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBarDelay_Scroll);
@@ -66,7 +66,7 @@
 			// buttonRun
 			// 
 			this.buttonRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonRun.Location = new System.Drawing.Point(297, 332);
+			this.buttonRun.Location = new System.Drawing.Point(317, 352);
 			this.buttonRun.Name = "buttonRun";
 			this.buttonRun.Size = new System.Drawing.Size(75, 23);
 			this.buttonRun.TabIndex = 9;
@@ -77,7 +77,7 @@
 			// buttonWider
 			// 
 			this.buttonWider.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonWider.Location = new System.Drawing.Point(12, 332);
+			this.buttonWider.Location = new System.Drawing.Point(12, 352);
 			this.buttonWider.Name = "buttonWider";
 			this.buttonWider.Size = new System.Drawing.Size(75, 23);
 			this.buttonWider.TabIndex = 8;
@@ -88,7 +88,7 @@
 			// buttonStep
 			// 
 			this.buttonStep.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonStep.Location = new System.Drawing.Point(90, 332);
+			this.buttonStep.Location = new System.Drawing.Point(90, 352);
 			this.buttonStep.Name = "buttonStep";
 			this.buttonStep.Size = new System.Drawing.Size(75, 23);
 			this.buttonStep.TabIndex = 7;
@@ -104,7 +104,7 @@
 			this.drawPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.drawPanel.Location = new System.Drawing.Point(12, 12);
 			this.drawPanel.Name = "drawPanel";
-			this.drawPanel.Size = new System.Drawing.Size(360, 314);
+			this.drawPanel.Size = new System.Drawing.Size(380, 334);
 			this.drawPanel.TabIndex = 12;
 			// 
 			// timerRun
@@ -121,13 +121,14 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(384, 361);
+			this.ClientSize = new System.Drawing.Size(404, 381);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.hScrollBarDelay);
 			this.Controls.Add(this.buttonRun);
 			this.Controls.Add(this.buttonWider);
 			this.Controls.Add(this.buttonStep);
 			this.Controls.Add(this.drawPanel);
+			this.MinimumSize = new System.Drawing.Size(420, 420);
 			this.Name = "GyroForm";
 			this.Text = "Gyro 3D";
 			this.ResumeLayout(false);
