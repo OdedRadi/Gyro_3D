@@ -18,10 +18,13 @@ namespace OpenGL
 		private int Width { get; set; }
 		private int Height { get; set; }
 
+		// Height - x axis, Width - y axis, Depth - z axis
 		private float m_cubeHeight = 1.0f;
 		private float m_cubeWidth = 1.0f;
-		private float m_prismHeight = 0.7f;
+		private float m_cubeDepth = 1.0f;
+		private float m_prismHeight = 0.2f;
 		private float m_prismWidth = 0.2f;
+		private float m_prismDepth = 0.7f;
 
 		public gyroOGL(Control control)
 		{
@@ -56,10 +59,10 @@ namespace OpenGL
 
 		protected void DrawAll()
 		{
-			// drawing the axes, the cube and the triangular from the current position
+			// drawing the axes, the cube and the pyramid from the current position
 			drawAxes();
 			drawGyroCube();
-			drawGyroTriangular();
+			drawGyroPyramid();
 
 			// translate the position to draw the prism on the top of the cube
 			float xPrismOrigin = (m_cubeWidth / 2 - m_prismWidth / 2);
@@ -91,66 +94,60 @@ namespace OpenGL
 
 		private void drawGyroPrism()
 		{
-			GL.glBegin(GL.GL_QUADS);
-
-			drawGenericCube(m_prismWidth, m_prismHeight);
-
-			GL.glEnd();
+			drawGenericCube(m_prismWidth, m_prismHeight, m_prismDepth);
 		}
 
 		private void drawGyroCube()
 		{
-			GL.glBegin(GL.GL_QUADS);
-
-			drawGenericCube(m_cubeHeight, m_cubeWidth);
-
-			GL.glEnd();
+			drawGenericCube(m_cubeHeight, m_cubeWidth, m_cubeDepth);
 		}
 
-		private void drawGyroTriangular()
+		private void drawGyroPyramid()
 		{
 			// TODO
 		}
 
-		private void drawGenericCube(float width, float height)
+		private void drawGenericCube(float width, float height, float depth)
 		{
+			GL.glBegin(GL.GL_QUADS);
+
 			GL.glColor3f(1.0f, 0.0f, 0.0f);
-			drawParallelSquareSurfaces(width, height, eAxis.X);
+			drawParallelSquareSurfaces(0, height, depth, eAxis.X);
+			drawParallelSquareSurfaces(width, height, depth, eAxis.X);
 
 			GL.glColor3f(0.0f, 1.0f, 0.0f);
-			drawParallelSquareSurfaces(width, height, eAxis.Y);
+			drawParallelSquareSurfaces(width, 0, depth, eAxis.Y);
+			drawParallelSquareSurfaces(width, height, depth, eAxis.Y);
 
 			GL.glColor3f(0.0f, 0.0f, 1.0f);
-			drawParallelSquareSurfaces(width, height, eAxis.Z);
+			drawParallelSquareSurfaces(width, height, 0, eAxis.Z);
+			drawParallelSquareSurfaces(width, height, depth, eAxis.Z);
+
+			GL.glEnd();
 		}
 
-		private void drawParallelSquareSurfaces(float width, float height, eAxis axis)
+		private void drawParallelSquareSurfaces(float width, float height, float depth, eAxis axis)
 		{
-			float surfacesDistance = axis == eAxis.Z ? height : width;
-
-			for (float i = 0; i < surfacesDistance * 2; i += surfacesDistance)
+			switch (axis)
 			{
-				switch (axis)
-				{
-					case eAxis.X:
-						GL.glVertex3f(i, 0, 0);
-						GL.glVertex3f(i, 0, height);
-						GL.glVertex3f(i, width, height);
-						GL.glVertex3f(i, width, 0);
-						break;
-					case eAxis.Y:
-						GL.glVertex3f(0, i, 0);
-						GL.glVertex3f(0, i, height);
-						GL.glVertex3f(width, i, height);
-						GL.glVertex3f(width, i, 0);
-						break;
-					case eAxis.Z:
-						GL.glVertex3f(0, 0, i);
-						GL.glVertex3f(0, width, i);
-						GL.glVertex3f(width, width, i);
-						GL.glVertex3f(width, 0, i);
-						break;
-				}
+				case eAxis.X:
+					GL.glVertex3f(width, 0, 0);
+					GL.glVertex3f(width, 0, depth);
+					GL.glVertex3f(width, height, depth);
+					GL.glVertex3f(width, height, 0);
+					break;
+				case eAxis.Y:
+					GL.glVertex3f(0, height, 0);
+					GL.glVertex3f(0, height, depth);
+					GL.glVertex3f(width, height, depth);
+					GL.glVertex3f(width, height, 0);
+					break;
+				case eAxis.Z:
+					GL.glVertex3f(0, 0, depth);
+					GL.glVertex3f(0, height, depth);
+					GL.glVertex3f(width, height, depth);
+					GL.glVertex3f(width, 0, depth);
+					break;
 			}
 		}
 
@@ -166,7 +163,7 @@ namespace OpenGL
 			GL.glTranslatef(0.0f, 0.0f, -3.0f); // Translate 6 Units Into The Screen
 
 			m_angle += 5.0f;
-			GL.glRotatef(m_angle, 1.0f, 1.0f, 0.0f);
+			GL.glRotatef(m_angle, 1.0f, 1.0f, 1.0f);
 
 			DrawAll();
 
