@@ -112,21 +112,21 @@ namespace OpenGL
 			GL.glBegin(GL.GL_QUADS);
 
 			GL.glColor3f(1.0f, 0.0f, 0.0f);
-			drawParallelSquareSurfaces(0, height, depth, eAxis.X);
-			drawParallelSquareSurfaces(width, height, depth, eAxis.X);
+			drawSquareSurface(0, height, depth, eAxis.X);
+			drawSquareSurface(width, height, depth, eAxis.X);
 
 			GL.glColor3f(0.0f, 1.0f, 0.0f);
-			drawParallelSquareSurfaces(width, 0, depth, eAxis.Y);
-			drawParallelSquareSurfaces(width, height, depth, eAxis.Y);
+			drawSquareSurface(width, 0, depth, eAxis.Y);
+			drawSquareSurface(width, height, depth, eAxis.Y);
 
 			GL.glColor3f(0.0f, 0.0f, 1.0f);
-			drawParallelSquareSurfaces(width, height, 0, eAxis.Z);
-			drawParallelSquareSurfaces(width, height, depth, eAxis.Z);
+			drawSquareSurface(width, height, 0, eAxis.Z);
+			drawSquareSurface(width, height, depth, eAxis.Z);
 
 			GL.glEnd();
 		}
 
-		private void drawParallelSquareSurfaces(float width, float height, float depth, eAxis axis)
+		private void drawSquareSurface(float width, float height, float depth, eAxis axis)
 		{
 			switch (axis)
 			{
