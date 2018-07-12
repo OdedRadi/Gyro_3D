@@ -56,10 +56,10 @@ namespace OpenGL
 
 		protected void DrawAll()
 		{
-			// drawing the axes, the cube and the triangular from the current position
+			// drawing the axes, the cube and the pyramid from the current position
 			drawAxes();
 			drawGyroCube();
-			drawGyroTriangular();
+			drawGyroPyramid();
 
 			// translate the position to draw the prism on the top of the cube
 			float xPrismOrigin = (m_cubeWidth / 2 - m_prismWidth / 2);
@@ -107,7 +107,7 @@ namespace OpenGL
 			GL.glEnd();
 		}
 
-		private void drawGyroTriangular()
+		private void drawGyroPyramid()
 		{
 			// TODO
 		}
