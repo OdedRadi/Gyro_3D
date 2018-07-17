@@ -1725,6 +1725,8 @@ namespace OpenGL
 		public static extern void glTexImage1D(uint  target,int level,int internalformat,int width,int border,uint  format,uint  type,object[] pixels);
 		[DllImport(GL_DLL,EntryPoint ="glTexImage2D")]
 		public static extern void glTexImage2D(uint  target,int level,int internalformat,int width,int height,int border,uint  format,uint  type,object[] pixels);
+		[DllImport(GL_DLL,EntryPoint ="glTexImage2D")]
+		public static extern void glTexImage2D(uint target, int level, int internalformat, int width, int height, int border, uint format, uint type, IntPtr pixels);
 		[DllImport(GL_DLL,EntryPoint ="glTexParameterf")]
 		public static extern void glTexParameterf(uint  target,uint  pname,float param);
 		[DllImport(GL_DLL,EntryPoint ="glTexParameterfv")]
