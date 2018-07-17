@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace OpenGL
@@ -29,7 +31,9 @@ namespace OpenGL
         private float m_pyramidWidth = 1.0f;
         private float m_pyramidDepth = 0.7f;
 
-        public gyroOGL(Control control)
+		private uint[] m_textureList;
+
+		public gyroOGL(Control control)
 		{
 			m_control = control;
 			Width = m_control.Width;
@@ -62,10 +66,11 @@ namespace OpenGL
 
 		protected void DrawAll()
 		{
-			// drawing the axes, the cube and the pyramid from the current position
+			// drawing the axes and the cube from the current position
 			drawAxes();
 			drawGyroCube();
 
+			GL.glColor3f(0.905f, 0.694f, 0.148f);
 			GL.glRotatef(180.0f, 1.0f, 1.0f, 0.0f); // rotate the position to draw the pyramid at vertical inversion
 			drawGyroPyramid();
 			GL.glRotatef(180.0f, 1.0f, 1.0f, 0.0f); // return to previous position
@@ -101,12 +106,18 @@ namespace OpenGL
 
 		private void drawGyroPrism()
 		{
-			drawGenericCube(m_prismWidth, m_prismHeight, m_prismDepth);
+			drawGenericCube(m_prismWidth, m_prismHeight, m_prismDepth, false);
 		}
 
 		private void drawGyroCube()
 		{
-			drawGenericCube(m_cubeHeight, m_cubeWidth, m_cubeDepth);
+			GL.glColor3f(1.0f, 1.0f, 1.0f);
+			GL.glEnable(GL.GL_TEXTURE_2D);
+			GL.glDisable(GL.GL_LIGHTING);
+
+			drawGenericCube(m_cubeHeight, m_cubeWidth, m_cubeDepth, true);
+
+			GL.glDisable(GL.GL_TEXTURE_2D);
 		}
 
 		private void drawGyroPyramid()
@@ -116,25 +127,21 @@ namespace OpenGL
             GL.glBegin(GL.GL_TRIANGLES);
 
             // first eAxis.x
-            GL.glColor3f(1.0f, 1.0f, 0.0f);
             GL.glVertex3f(0.0f, 0.0f, 0.0f);
             GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
             GL.glVertex3f(0.0f, m_pyramidHeight, 0.0f);
 
             // second eAxis.x
-            GL.glColor3f(1.0f, 0.0f, 0.0f);
             GL.glVertex3f(m_pyramidWidth, 0.0f, 0.0f);
             GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
             GL.glVertex3f(m_pyramidWidth, m_pyramidHeight, 0.0f);
 
             // first eAxis.y
-            GL.glColor3f(0.0f, 1.0f, 0.0f);
             GL.glVertex3f(0.0f, 0.0f, 0.0f);
             GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
             GL.glVertex3f(m_pyramidWidth, 0.0f, 0.0f);
 
             // second eAxis.y
-            GL.glColor3f(0.0f, 0.0f, 1.0f);
             GL.glVertex3f(0.0f, m_pyramidHeight, 0.0f);
             GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
             GL.glVertex3f(m_pyramidWidth, m_pyramidHeight, 0.0f);
@@ -142,17 +149,18 @@ namespace OpenGL
             GL.glEnd();
         }
 
-		private void drawGenericCube(float width, float height, float depth)
+		private void drawGenericCube(float width, float height, float depth, bool useTexture)
 		{
-			GL.glColor3f(1.0f, 0.0f, 0.0f);
+			GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[0]);
 			drawSquareSurface(0, height, depth, eAxis.X);
+			GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[2]);
 			drawSquareSurface(width, height, depth, eAxis.X);
-
-			GL.glColor3f(0.0f, 1.0f, 0.0f);
+			
+			GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[3]);
 			drawSquareSurface(width, 0, depth, eAxis.Y);
+			GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[1]);
 			drawSquareSurface(width, height, depth, eAxis.Y);
-
-			GL.glColor3f(0.0f, 0.0f, 1.0f);
+			
 			drawSquareSurface(width, height, 0, eAxis.Z);
 			drawSquareSurface(width, height, depth, eAxis.Z);			
 		}
@@ -161,18 +169,27 @@ namespace OpenGL
 		{
             GL.glBegin(GL.GL_QUADS);
 
+			// if there is no texture bind, the glTexCoord2f do nothing
             switch (axis)
 			{
 				case eAxis.X:
+					GL.glTexCoord2f(0.0f, 0.0f);
 					GL.glVertex3f(width, 0, 0);
+					GL.glTexCoord2f(0.0f, 1.0f);
 					GL.glVertex3f(width, 0, depth);
+					GL.glTexCoord2f(1.0f, 1.0f);
 					GL.glVertex3f(width, height, depth);
+					GL.glTexCoord2f(1.0f, 0.0f);
 					GL.glVertex3f(width, height, 0);
 					break;
 				case eAxis.Y:
+					GL.glTexCoord2f(0.0f, 0.0f);
 					GL.glVertex3f(0, height, 0);
+					GL.glTexCoord2f(0.0f, 1.0f);
 					GL.glVertex3f(0, height, depth);
+					GL.glTexCoord2f(1.0f, 1.0f);
 					GL.glVertex3f(width, height, depth);
+					GL.glTexCoord2f(1.0f, 0.0f);
 					GL.glVertex3f(width, height, 0);
 					break;
 				case eAxis.Z:
@@ -194,7 +211,7 @@ namespace OpenGL
 			GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 			GL.glLoadIdentity();
 
-			GL.glTranslatef(0.0f, 0.0f, -3.0f); // Translate 6 Units Into The Screen
+			GL.glTranslatef(0.0f, 0.0f, -2.0f); // Translate 6 Units Into The Screen
 			GL.glRotatef(270.0f, 1.0f, 0.0f, 0.0f); // make Z axis to be up
 
 			// make the gyro turn around itself
@@ -254,8 +271,7 @@ namespace OpenGL
 				MessageBox.Show("Unable to make rendering context current");
 				return;
 			}
-
-
+			
 			initRenderingGL();
 		}
 
@@ -290,6 +306,49 @@ namespace OpenGL
 			GLU.gluPerspective(100.0, (Width) / Height, 1.0, 1000.0);
 			GL.glMatrixMode(GL.GL_MODELVIEW);
 			GL.glLoadIdentity();
+
+			InitTexture();
+		}
+
+		void InitTexture()
+		{
+			GL.glEnable(GL.GL_TEXTURE_2D);
+
+			m_textureList = new uint[4];      // storage for texture
+			string[] bmpFilesPath = new string[m_textureList.Length];
+
+			bmpFilesPath[0] = "../../Resources/noon.bmp";
+			bmpFilesPath[1] = "../../Resources/gimel.bmp";
+			bmpFilesPath[2] = "../../Resources/hei.bmp";
+			bmpFilesPath[3] = "../../Resources/pei.bmp";
+
+			GL.glGenTextures(m_textureList.Length, m_textureList);
+			for (int i = 0; i < m_textureList.Length; i++)
+			{
+				Bitmap image = new Bitmap(bmpFilesPath[i]);
+				image.RotateFlip(RotateFlipType.RotateNoneFlipY); //Y axis in Windows is directed downwards, while in OpenGL-upwards
+
+				if (i < 2)
+				{
+					image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+				}
+
+				Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
+				BitmapData bitmapData = image.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+				
+				GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[i]);
+				//  VN-in order to use System.Drawing.Imaging.BitmapData Scan0 I've added overloaded version to
+				//  OpenGL.cs
+				//  [DllImport(GL_DLL, EntryPoint = "glTexImage2D")]
+				//  public static extern void glTexImage2D(uint target, int level, int internalformat, int width, int height, int border, uint format, uint type, IntPtr pixels);
+				GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, (int)GL.GL_RGB8, image.Width, image.Height,
+					0, GL.GL_BGR_EXT, GL.GL_UNSIGNED_byte, bitmapData.Scan0);
+				GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, (int)GL.GL_LINEAR);      // Linear Filtering
+				GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, (int)GL.GL_LINEAR);      // Linear Filtering
+
+				image.UnlockBits(bitmapData);
+				image.Dispose();
+			}
 		}
 	}
 }
