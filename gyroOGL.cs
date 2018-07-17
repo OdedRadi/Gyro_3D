@@ -27,7 +27,7 @@ namespace OpenGL
 		private float m_prismDepth = 0.7f;
         private float m_pyramidHeight = 1.0f;
         private float m_pyramidWidth = 1.0f;
-        private float m_pyramidDepth = 0.5f;
+        private float m_pyramidDepth = 0.7f;
 
         public gyroOGL(Control control)
 		{
@@ -65,7 +65,10 @@ namespace OpenGL
 			// drawing the axes, the cube and the pyramid from the current position
 			drawAxes();
 			drawGyroCube();
+
+			GL.glRotatef(180.0f, 1.0f, 1.0f, 0.0f); // rotate the position to draw the pyramid at vertical inversion
 			drawGyroPyramid();
+			GL.glRotatef(180.0f, 1.0f, 1.0f, 0.0f); // return to previous position
 
 			// translate the position to draw the prism on the top of the cube
 			float xPrismOrigin = (m_cubeWidth / 2 - m_prismWidth / 2);
@@ -74,6 +77,7 @@ namespace OpenGL
 
 			GL.glTranslatef(xPrismOrigin, yPrismOrigin, zPrismOrigin);
 			drawGyroPrism();
+			GL.glTranslatef(-xPrismOrigin, -yPrismOrigin, -zPrismOrigin); // return to previous position
 		}
 
 		private void drawAxes()
@@ -107,8 +111,6 @@ namespace OpenGL
 
 		private void drawGyroPyramid()
 		{
-            GL.glRotatef(180.0f, 1.0f, 1.0f, 0.0f);
-
             drawSquareSurface(m_pyramidWidth, m_pyramidHeight, 0.0f, eAxis.Z);
             
             GL.glBegin(GL.GL_TRIANGLES);
@@ -116,29 +118,28 @@ namespace OpenGL
             // first eAxis.x
             GL.glColor3f(1.0f, 1.0f, 0.0f);
             GL.glVertex3f(0.0f, 0.0f, 0.0f);
-            GL.glVertex3f(0.5f, 0.5f, 1.0f);
-            GL.glVertex3f(0.0f, 1.0f, 0.0f);
+            GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
+            GL.glVertex3f(0.0f, m_pyramidHeight, 0.0f);
 
             // second eAxis.x
             GL.glColor3f(1.0f, 0.0f, 0.0f);
-            GL.glVertex3f(1.0f, 0.0f, 0.0f);
-            GL.glVertex3f(0.5f, 0.5f, 1.0f);
-            GL.glVertex3f(1.0f, 1.0f, 0.0f);
+            GL.glVertex3f(m_pyramidWidth, 0.0f, 0.0f);
+            GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
+            GL.glVertex3f(m_pyramidWidth, m_pyramidHeight, 0.0f);
+
             // first eAxis.y
             GL.glColor3f(0.0f, 1.0f, 0.0f);
             GL.glVertex3f(0.0f, 0.0f, 0.0f);
-            GL.glVertex3f(0.5f, 0.5f, 1.0f);
-            GL.glVertex3f(1.0f, 0.0f, 0.0f);
+            GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
+            GL.glVertex3f(m_pyramidWidth, 0.0f, 0.0f);
 
             // second eAxis.y
             GL.glColor3f(0.0f, 0.0f, 1.0f);
-            GL.glVertex3f(0.0f, 1.0f, 0.0f);
-            GL.glVertex3f(0.5f, 0.5f, 1.0f);
-            GL.glVertex3f(1.0f, 1.0f, 0.0f);
-
+            GL.glVertex3f(0.0f, m_pyramidHeight, 0.0f);
+            GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
+            GL.glVertex3f(m_pyramidWidth, m_pyramidHeight, 0.0f);
 
             GL.glEnd();
-            GL.glRotatef(180.0f, 1.0f, 1.0f, 0.0f);
         }
 
 		private void drawGenericCube(float width, float height, float depth)
@@ -193,18 +194,21 @@ namespace OpenGL
 			GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 			GL.glLoadIdentity();
 
-
 			GL.glTranslatef(0.0f, 0.0f, -3.0f); // Translate 6 Units Into The Screen
+			GL.glRotatef(270.0f, 1.0f, 0.0f, 0.0f); // make Z axis to be up
 
+			// make the gyro turn around itself
 			m_angle += 1.0f;
-			GL.glRotatef(m_angle, 1.0f, 1.0f, 1.0f);
+			GL.glTranslatef(m_cubeWidth / 2.0f, m_cubeWidth / 2.0f, 0.0f);
+			GL.glRotatef(m_angle, 0.0f, 0.0f, 1.0f);
+			GL.glTranslatef(-m_cubeWidth / 2.0f, -m_cubeWidth / 2.0f, 0.0f);
 
-            DrawAll();
+			// draw the gyro
+			DrawAll();
 
 			GL.glFlush();
 
 			WGL.wglSwapBuffers(m_uint_DC);
-
 		}
 
 		protected virtual void InitializeGL()

@@ -37,7 +37,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\gimel.bmp" />
+    <Content Include="Resources\hei.bmp" />
+    <Content Include="Resources\noon.bmp" />
+    <Content Include="Resources\pei.bmp" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="gyroOGL.cs" />
     <Compile Include="Forms\GyroForm.cs">
