@@ -106,7 +106,7 @@ namespace OpenGL
 
 		private void drawGyroPrism()
 		{
-			drawGenericCube(m_prismWidth, m_prismHeight, m_prismDepth, false);
+			drawGenericCube(m_prismWidth, m_prismHeight, m_prismDepth);
 		}
 
 		private void drawGyroCube()
@@ -115,7 +115,7 @@ namespace OpenGL
 			GL.glEnable(GL.GL_TEXTURE_2D);
 			GL.glDisable(GL.GL_LIGHTING);
 
-			drawGenericCube(m_cubeHeight, m_cubeWidth, m_cubeDepth, true);
+			drawGenericCube(m_cubeHeight, m_cubeWidth, m_cubeDepth);
 
 			GL.glDisable(GL.GL_TEXTURE_2D);
 		}
@@ -149,8 +149,9 @@ namespace OpenGL
             GL.glEnd();
         }
 
-		private void drawGenericCube(float width, float height, float depth, bool useTexture)
+		private void drawGenericCube(float width, float height, float depth)
 		{
+			// if there is no texture enabled, the glBindTexture do nothing
 			GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[0]);
 			drawSquareSurface(0, height, depth, eAxis.X);
 			GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[2]);
