@@ -124,6 +124,7 @@ namespace OpenGL
             GL.glVertex3f(1.0f, 0.0f, 0.0f);
             GL.glVertex3f(0.5f, 0.5f, 1.0f);
             GL.glVertex3f(1.0f, 1.0f, 0.0f);
+
             // first eAxis.y
             GL.glColor3f(0.0f, 1.0f, 0.0f);
             GL.glVertex3f(0.0f, 0.0f, 0.0f);
@@ -193,18 +194,21 @@ namespace OpenGL
 			GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 			GL.glLoadIdentity();
 
-
 			GL.glTranslatef(0.0f, 0.0f, -3.0f); // Translate 6 Units Into The Screen
+			GL.glRotatef(270.0f, 1.0f, 0.0f, 0.0f); // make Z axis to be up
 
+			// make the gyro turn around itself
 			m_angle += 1.0f;
-			GL.glRotatef(m_angle, 1.0f, 1.0f, 1.0f);
+			GL.glTranslatef(m_cubeWidth / 2.0f, m_cubeWidth / 2.0f, 0.0f);
+			GL.glRotatef(m_angle, 0.0f, 0.0f, 1.0f);
+			GL.glTranslatef(-m_cubeWidth / 2.0f, -m_cubeWidth / 2.0f, 0.0f);
 
-            DrawAll();
+			// draw the gyro
+			DrawAll();
 
 			GL.glFlush();
 
 			WGL.wglSwapBuffers(m_uint_DC);
-
 		}
 
 		protected virtual void InitializeGL()
