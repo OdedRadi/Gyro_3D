@@ -18,15 +18,18 @@ namespace OpenGL
 		private int Width { get; set; }
 		private int Height { get; set; }
 
-		// Height - x axis, Width - y axis, Depth - z axis
+		// Width - x axis, Height - y axis, Depth - z axis
 		private float m_cubeHeight = 1.0f;
 		private float m_cubeWidth = 1.0f;
 		private float m_cubeDepth = 1.0f;
 		private float m_prismHeight = 0.2f;
 		private float m_prismWidth = 0.2f;
 		private float m_prismDepth = 0.7f;
+        private float m_pyramidHeight = 1.0f;
+        private float m_pyramidWidth = 1.0f;
+        private float m_pyramidDepth = 0.5f;
 
-		public gyroOGL(Control control)
+        public gyroOGL(Control control)
 		{
 			m_control = control;
 			Width = m_control.Width;
@@ -104,13 +107,42 @@ namespace OpenGL
 
 		private void drawGyroPyramid()
 		{
-			// TODO
-		}
+            GL.glRotatef(180.0f, 1.0f, 1.0f, 0.0f);
+
+            drawSquareSurface(m_pyramidWidth, m_pyramidHeight, 0.0f, eAxis.Z);
+            
+            GL.glBegin(GL.GL_TRIANGLES);
+
+            // first eAxis.x
+            GL.glColor3f(1.0f, 1.0f, 0.0f);
+            GL.glVertex3f(0.0f, 0.0f, 0.0f);
+            GL.glVertex3f(0.5f, 0.5f, 1.0f);
+            GL.glVertex3f(0.0f, 1.0f, 0.0f);
+
+            // second eAxis.x
+            GL.glColor3f(1.0f, 0.0f, 0.0f);
+            GL.glVertex3f(1.0f, 0.0f, 0.0f);
+            GL.glVertex3f(0.5f, 0.5f, 1.0f);
+            GL.glVertex3f(1.0f, 1.0f, 0.0f);
+            // first eAxis.y
+            GL.glColor3f(0.0f, 1.0f, 0.0f);
+            GL.glVertex3f(0.0f, 0.0f, 0.0f);
+            GL.glVertex3f(0.5f, 0.5f, 1.0f);
+            GL.glVertex3f(1.0f, 0.0f, 0.0f);
+
+            // second eAxis.y
+            GL.glColor3f(0.0f, 0.0f, 1.0f);
+            GL.glVertex3f(0.0f, 1.0f, 0.0f);
+            GL.glVertex3f(0.5f, 0.5f, 1.0f);
+            GL.glVertex3f(1.0f, 1.0f, 0.0f);
+
+
+            GL.glEnd();
+            GL.glRotatef(180.0f, 1.0f, 1.0f, 0.0f);
+        }
 
 		private void drawGenericCube(float width, float height, float depth)
 		{
-			GL.glBegin(GL.GL_QUADS);
-
 			GL.glColor3f(1.0f, 0.0f, 0.0f);
 			drawSquareSurface(0, height, depth, eAxis.X);
 			drawSquareSurface(width, height, depth, eAxis.X);
@@ -121,14 +153,14 @@ namespace OpenGL
 
 			GL.glColor3f(0.0f, 0.0f, 1.0f);
 			drawSquareSurface(width, height, 0, eAxis.Z);
-			drawSquareSurface(width, height, depth, eAxis.Z);
-
-			GL.glEnd();
+			drawSquareSurface(width, height, depth, eAxis.Z);			
 		}
 
 		private void drawSquareSurface(float width, float height, float depth, eAxis axis)
 		{
-			switch (axis)
+            GL.glBegin(GL.GL_QUADS);
+
+            switch (axis)
 			{
 				case eAxis.X:
 					GL.glVertex3f(width, 0, 0);
@@ -149,7 +181,9 @@ namespace OpenGL
 					GL.glVertex3f(width, 0, depth);
 					break;
 			}
-		}
+
+            GL.glEnd();
+        }
 
 		public void Draw()
 		{
@@ -162,10 +196,10 @@ namespace OpenGL
 
 			GL.glTranslatef(0.0f, 0.0f, -3.0f); // Translate 6 Units Into The Screen
 
-			m_angle += 5.0f;
+			m_angle += 1.0f;
 			GL.glRotatef(m_angle, 1.0f, 1.0f, 1.0f);
 
-			DrawAll();
+            DrawAll();
 
 			GL.glFlush();
 
