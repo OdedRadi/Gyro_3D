@@ -35,7 +35,7 @@
             this.buttonWider = new System.Windows.Forms.Button();
             this.buttonStep = new System.Windows.Forms.Button();
             this.drawPanel = new System.Windows.Forms.Panel();
-            this.timerRun = new System.Windows.Forms.Timer(this.components);
+            this.timerRotating = new System.Windows.Forms.Timer(this.components);
             this.timerRepaint = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.scrollBarPrismRadius = new System.Windows.Forms.HScrollBar();
@@ -48,6 +48,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.timerSwinging = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -118,10 +119,10 @@
             this.drawPanel.Size = new System.Drawing.Size(418, 334);
             this.drawPanel.TabIndex = 12;
             // 
-            // timerRun
+            // timerRotating
             // 
-            this.timerRun.Interval = 10;
-            this.timerRun.Tick += new System.EventHandler(this.timerRun_Tick);
+            this.timerRotating.Interval = 10;
+            this.timerRotating.Tick += new System.EventHandler(this.timerRotating_Tick);
             // 
             // timerRepaint
             // 
@@ -253,6 +254,11 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "Gyro Radius:";
             // 
+            // timerSwinging
+            // 
+            this.timerSwinging.Interval = 10;
+            this.timerSwinging.Tick += new System.EventHandler(this.timerSwinging_Tick);
+            // 
             // GyroForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -283,7 +289,7 @@
 		private System.Windows.Forms.Button buttonWider;
 		private System.Windows.Forms.Button buttonStep;
 		private System.Windows.Forms.Panel drawPanel;
-		private System.Windows.Forms.Timer timerRun;
+		private System.Windows.Forms.Timer timerRotating;
 		private System.Windows.Forms.Timer timerRepaint;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.HScrollBar scrollBarPrismRadius;
@@ -296,5 +302,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Timer timerSwinging;
     }
 }

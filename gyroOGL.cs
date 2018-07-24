@@ -17,6 +17,7 @@ namespace OpenGL
         private Control m_control;
 
         private float m_angle = 0.0f;
+        private float m_rotatingSpeed = 20.0f;
         private float m_fallingAngle = 1.0f;
         private float m_fallingFactor = 0.05f;
         private int Width { get; set; }
@@ -27,14 +28,16 @@ namespace OpenGL
         public float CubeWidth { get; set; }
         public float CubeDepth { get; set; }
         public float PrismHeight { get; set; }
+        
         public float PrismWidth { get; set; }
         public float PrismDepth { get; set; }
         public float PyramidHeight { get; set; }
         public float PyramidWidth { get; set; }
         public float PyramidDepth { get; set; }
 
-
         private uint[] m_textureList;
+
+        public event Action gyroFellEvent;
 
         public gyroOGL(Control control)
         {
@@ -217,7 +220,7 @@ namespace OpenGL
             GL.glEnd();
         }
 
-        public void Draw()
+        public void DrawRotating()
         {
             if (m_uint_DC == 0 || m_uint_RC == 0)
                 return;
@@ -229,18 +232,91 @@ namespace OpenGL
             GL.glRotatef(270.0f, 1.0f, 0.0f, 0.0f); // make Z axis to be up
 
             // make the gyro turn around itself
-            m_angle += 10.0f;
+            m_angle += m_rotatingSpeed;
             GL.glTranslatef(CubeWidth / 2.0f, CubeWidth / 2.0f, 0.0f);
             GL.glRotatef(m_angle, 0.0f, 0.0f, 1.0f);
             GL.glTranslatef(-CubeWidth / 2.0f, -CubeWidth / 2.0f, 0.0f);
 
             // the gyro loose power
             GL.glRotatef(m_fallingAngle, 0.0f, 1.0f, 0.0f);
-            m_angle -= m_fallingFactor * 10;
+            m_angle -= m_fallingFactor * m_rotatingSpeed;
             m_fallingAngle += m_fallingFactor;
+
+            if (m_fallingAngle >= 45)
+            {
+                //m_angle %= 360.0f;
+                m_fellAngle = m_angle % 360.0f;
+                gyroFellEvent.Invoke(); // this event handled by GyroForm to stop drawRotating, and start drawSwinging
+            }
 
             // draw the gyro
             DrawAll();
+
+            GL.glFlush();
+
+            WGL.wglSwapBuffers(m_uint_DC);
+        }
+
+        private float m_swingingDirection = 1.0f;
+        private float m_swingingSpeed = 10.0f;
+        private float m_fellAngle;
+        private float m_fellAmplitude = 0.2f;
+        private float m_xRotate = 0.0f;
+
+        public void DrawSwinging()
+        {
+            if (m_uint_DC == 0 || m_uint_RC == 0)
+                return;
+
+            GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+            GL.glLoadIdentity();
+
+            GL.glTranslatef(0.0f, 0.0f, -2.0f); // Translate 6 Units Into The Screen
+            GL.glRotatef(270.0f, 1.0f, 0.0f, 0.0f); // make Z axis to be up
+
+
+            m_fellAngle += m_swingingSpeed;
+            m_swingingSpeed -= 0.01f;
+            
+            /*if (m_fellAngle + m_swingingSpeed > m_fellAngle + m_fellAmplitude)
+            {
+                m_swingingDirection *= -1;
+            }
+            else if (m_fellAngle < m_angle - m_fellAmplitude)
+            {
+                m_swingingSpeed += 0.1f;
+            }*/
+
+            // set the gyro last position
+            GL.glTranslatef(CubeWidth / 2.0f, CubeWidth / 2.0f, 0.0f);
+            GL.glRotatef(m_fellAngle + m_swingingSpeed, 0.0f, 0.0f, 1.0f);
+            GL.glTranslatef(-CubeWidth / 2.0f, -CubeWidth / 2.0f, 0.0f);
+
+            //m_fallingAngle += 0.1f;
+            GL.glRotatef(m_fallingAngle, 0.0f, 1.0f, 0.0f);
+
+
+            if (m_fellAngle % 90.0f < 1 && m_fellAngle % 90.0f > -1)
+            {
+                m_xRotate += 10.0f;
+            }
+
+            GL.glRotatef(m_xRotate, 1.0f, 1.0f, 0.0f);
+
+            //m_angle += 5f;
+
+            //m_swingingAngle += 0.1f;
+            //m_swingingDirection *= -1.0f;
+
+            //GL.glRotatef(m_swingingAngle, 0.0f, m_swingingDirection, 0.0f);
+
+
+            if (m_swingingSpeed > 0)
+            {
+            // draw the gyro
+            DrawAll();
+            }
+
 
             GL.glFlush();
 
@@ -304,7 +380,7 @@ namespace OpenGL
             //!!!!!!!
 
             initRenderingGL();
-            Draw();
+            DrawRotating();
         }
 
         protected virtual void initRenderingGL()
