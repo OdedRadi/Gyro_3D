@@ -66,5 +66,34 @@ namespace Gyro_3D
 		{
 
 		}
-	}
+
+        private void scrollBarGyroRadius_Scroll(object sender, ScrollEventArgs e)
+        {
+            gyroGL.CubeWidth = e.NewValue / 10f;
+            gyroGL.PyramidWidth = e.NewValue / 10f;
+            gyroGL.CubeHeight = e.NewValue / 10f;
+            gyroGL.PyramidHeight = e.NewValue / 10f;
+        }
+
+        private void scrollBarCubeZSize_Scroll(object sender, ScrollEventArgs e)
+        {
+            gyroGL.CubeDepth = e.NewValue / 10f;
+        }
+
+        private void scrollBarPyramidZSize_Scroll(object sender, ScrollEventArgs e)
+        {
+            gyroGL.PyramidDepth = e.NewValue / 12f;
+        }
+
+        private void scrollBarPrismZSize_Scroll(object sender, ScrollEventArgs e)
+        {
+            gyroGL.PrismDepth = e.NewValue / 20f;
+        }
+
+        private void scrollBarPrismRadius_Scroll(object sender, ScrollEventArgs e)
+        {
+            gyroGL.PrismHeight = e.NewValue / 50f;
+            gyroGL.PrismWidth = e.NewValue / 50f;
+        }
+    }
 }

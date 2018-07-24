@@ -18,19 +18,21 @@ namespace OpenGL
 
         private float m_angle = 0.0f;
         private float m_fallingAngle = 1.0f;
+        private float m_fallingFactor = 0.05f;
         private int Width { get; set; }
         private int Height { get; set; }
 
         // Width - x axis, Height - y axis, Depth - z axis
-        private float m_cubeHeight = 1.0f;
-        private float m_cubeWidth = 1.0f;
-        private float m_cubeDepth = 1.0f;
-        private float m_prismHeight = 0.2f;
-        private float m_prismWidth = 0.2f;
-        private float m_prismDepth = 0.7f;
-        private float m_pyramidHeight = 1.0f;
-        private float m_pyramidWidth = 1.0f;
-        private float m_pyramidDepth = 0.7f;
+        public float CubeHeight { get; set; }
+        public float CubeWidth { get; set; }
+        public float CubeDepth { get; set; }
+        public float PrismHeight { get; set; }
+        public float PrismWidth { get; set; }
+        public float PrismDepth { get; set; }
+        public float PyramidHeight { get; set; }
+        public float PyramidWidth { get; set; }
+        public float PyramidDepth { get; set; }
+
 
         private uint[] m_textureList;
 
@@ -40,6 +42,16 @@ namespace OpenGL
             Width = m_control.Width;
             Height = m_control.Height;
             InitializeGL();
+
+            CubeHeight = 1.0f;
+            CubeWidth = 1.0f;
+            CubeDepth = 1.0f;
+            PrismHeight = 0.2f;
+            PrismWidth = 0.2f;
+            PrismDepth = 0.7f;
+            PyramidHeight = 1.0f;
+            PyramidWidth = 1.0f;
+            PyramidDepth = 0.7f;
         }
 
         ~gyroOGL()
@@ -77,9 +89,9 @@ namespace OpenGL
             GL.glRotatef(180.0f, 1.0f, 1.0f, 0.0f); // return to previous position
 
             // translate the position to draw the prism on the top of the cube
-            float xPrismOrigin = (m_cubeWidth / 2 - m_prismWidth / 2);
-            float yPrismOrigin = (m_cubeWidth / 2 - m_prismWidth / 2);
-            float zPrismOrigin = m_cubeHeight;
+            float xPrismOrigin = (CubeWidth / 2 - PrismWidth / 2);
+            float yPrismOrigin = (CubeHeight / 2 - PrismHeight / 2);
+            float zPrismOrigin = CubeDepth;
 
             GL.glTranslatef(xPrismOrigin, yPrismOrigin, zPrismOrigin);
             drawGyroPrism();
@@ -107,7 +119,7 @@ namespace OpenGL
 
         private void drawGyroPrism()
         {
-            drawGenericCube(m_prismWidth, m_prismHeight, m_prismDepth);
+            drawGenericCube(PrismWidth, PrismHeight, PrismDepth);
         }
 
         private void drawGyroCube()
@@ -116,36 +128,36 @@ namespace OpenGL
             GL.glEnable(GL.GL_TEXTURE_2D);
             GL.glDisable(GL.GL_LIGHTING);
 
-            drawGenericCube(m_cubeHeight, m_cubeWidth, m_cubeDepth);
+            drawGenericCube(CubeHeight, CubeWidth, CubeDepth);
 
             GL.glDisable(GL.GL_TEXTURE_2D);
         }
 
         private void drawGyroPyramid()
         {
-            drawSquareSurface(m_pyramidWidth, m_pyramidHeight, 0.0f, eAxis.Z);
+            drawSquareSurface(PyramidWidth, PyramidHeight, 0.0f, eAxis.Z);
 
             GL.glBegin(GL.GL_TRIANGLES);
 
             // first eAxis.x
             GL.glVertex3f(0.0f, 0.0f, 0.0f);
-            GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
-            GL.glVertex3f(0.0f, m_pyramidHeight, 0.0f);
+            GL.glVertex3f(PyramidWidth / 2, PyramidHeight / 2, PyramidDepth);
+            GL.glVertex3f(0.0f, PyramidHeight, 0.0f);
 
             // second eAxis.x
-            GL.glVertex3f(m_pyramidWidth, 0.0f, 0.0f);
-            GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
-            GL.glVertex3f(m_pyramidWidth, m_pyramidHeight, 0.0f);
+            GL.glVertex3f(PyramidWidth, 0.0f, 0.0f);
+            GL.glVertex3f(PyramidWidth / 2, PyramidHeight / 2, PyramidDepth);
+            GL.glVertex3f(PyramidWidth, PyramidHeight, 0.0f);
 
             // first eAxis.y
             GL.glVertex3f(0.0f, 0.0f, 0.0f);
-            GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
-            GL.glVertex3f(m_pyramidWidth, 0.0f, 0.0f);
+            GL.glVertex3f(PyramidWidth / 2, PyramidHeight / 2, PyramidDepth);
+            GL.glVertex3f(PyramidWidth, 0.0f, 0.0f);
 
             // second eAxis.y
-            GL.glVertex3f(0.0f, m_pyramidHeight, 0.0f);
-            GL.glVertex3f(m_pyramidWidth / 2, m_pyramidHeight / 2, m_pyramidDepth);
-            GL.glVertex3f(m_pyramidWidth, m_pyramidHeight, 0.0f);
+            GL.glVertex3f(0.0f, PyramidHeight, 0.0f);
+            GL.glVertex3f(PyramidWidth / 2, PyramidHeight / 2, PyramidDepth);
+            GL.glVertex3f(PyramidWidth, PyramidHeight, 0.0f);
 
             GL.glEnd();
         }
@@ -218,14 +230,14 @@ namespace OpenGL
 
             // make the gyro turn around itself
             m_angle += 10.0f;
-            GL.glTranslatef(m_cubeWidth / 2.0f, m_cubeWidth / 2.0f, 0.0f);
+            GL.glTranslatef(CubeWidth / 2.0f, CubeWidth / 2.0f, 0.0f);
             GL.glRotatef(m_angle, 0.0f, 0.0f, 1.0f);
-            GL.glTranslatef(-m_cubeWidth / 2.0f, -m_cubeWidth / 2.0f, 0.0f);
+            GL.glTranslatef(-CubeWidth / 2.0f, -CubeWidth / 2.0f, 0.0f);
 
             // the gyro loose power
             GL.glRotatef(m_fallingAngle, 0.0f, 1.0f, 0.0f);
-            m_angle -= 0.5f;
-            m_fallingAngle += 0.05f;
+            m_angle -= m_fallingFactor * 10;
+            m_fallingAngle += m_fallingFactor;
 
             // draw the gyro
             DrawAll();
