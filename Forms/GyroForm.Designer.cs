@@ -171,7 +171,7 @@
             this.scrollBarPrismZSize.Size = new System.Drawing.Size(118, 13);
             this.scrollBarPrismZSize.TabIndex = 7;
             this.scrollBarPrismZSize.Value = 10;
-            this.scrollBarPrismZSize.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scrollBarPrismZSize_Scroll);
+            this.scrollBarPrismZSize.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scrollBarPrismHeight_Scroll);
             // 
             // scrollBarPyramidZSize
             // 
@@ -183,7 +183,7 @@
             this.scrollBarPyramidZSize.Size = new System.Drawing.Size(118, 13);
             this.scrollBarPyramidZSize.TabIndex = 5;
             this.scrollBarPyramidZSize.Value = 10;
-            this.scrollBarPyramidZSize.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scrollBarPyramidZSize_Scroll);
+            this.scrollBarPyramidZSize.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scrollBarPyramidHeight_Scroll);
             // 
             // scrollBarCubeZSize
             // 
@@ -195,7 +195,7 @@
             this.scrollBarCubeZSize.Size = new System.Drawing.Size(118, 13);
             this.scrollBarCubeZSize.TabIndex = 5;
             this.scrollBarCubeZSize.Value = 10;
-            this.scrollBarCubeZSize.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scrollBarCubeZSize_Scroll);
+            this.scrollBarCubeZSize.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scrollBarCubeHeight_Scroll);
             // 
             // scrollBarGyroRadius
             // 
