@@ -19,7 +19,7 @@ namespace OpenGL
         private float m_angle = 0.0f;
         private float m_rotatingSpeed = 20.0f;
         private float m_fallingAngle = 1.0f;
-        private float m_fallingFactor = 0.05f;
+        private float m_fallingFactor = 0.5f;
         private int Width { get; set; }
         private int Height { get; set; }
 
@@ -36,7 +36,7 @@ namespace OpenGL
 
         private uint[] m_textureList;
 
-        public event Action gyroFellEvent;
+        public event Action GyroFellEvent;
 
         public gyroOGL(Control control)
         {
@@ -224,19 +224,18 @@ namespace OpenGL
             // make the gyro turn around itself
             m_angle += m_rotatingSpeed;
             GL.glTranslatef(CubeWidth / 2.0f, 0.0f, CubeDepth / 2.0f);
-            GL.glRotatef(m_angle, 0.0f, 1.0f, 0.0f);
+            GL.glRotatef(m_angle, 0.0f, -1.0f, 0.0f);
             GL.glTranslatef(-CubeWidth / 2.0f, 0.0f, -CubeDepth / 2.0f);
 
             // the gyro loose power
-            GL.glRotatef(m_fallingAngle, 0.0f, 0.0f, 1.0f);
+            GL.glRotatef(m_fallingAngle, 1.0f, 0.0f, 0.0f);
             m_angle -= m_fallingFactor * m_rotatingSpeed;
             m_fallingAngle += m_fallingFactor;
 
             if (m_fallingAngle >= 45)
             {
-                //m_angle %= 360.0f;
-                m_fellAngle = m_angle % 360.0f;
-                gyroFellEvent.Invoke(); // this event handled by GyroForm to stop drawRotating, and start drawSwinging
+                m_fellAngle = m_fallingAngle % 360.0f;
+                GyroFellEvent.Invoke(); // this event handled by GyroForm to stop drawRotating, and start drawSwinging
             }
 
             // draw the gyro
@@ -263,26 +262,31 @@ namespace OpenGL
 
             GL.glTranslatef(0.0f, 0.0f, -3.0f); // Translate 3 Units Into The Screen
 
-
-            m_fellAngle += m_swingingSpeed;
-            m_swingingSpeed -= 0.01f;
-            
+            //m_fellAngle += m_swingingSpeed;
+            m_swingingSpeed -= 0.05f;
+            m_fellAngle += 0.1f;
             /*if (m_fellAngle + m_swingingSpeed > m_fellAngle + m_fellAmplitude)
             {
                 m_swingingDirection *= -1;
-            }
-            else if (m_fellAngle < m_angle - m_fellAmplitude)
+            }*/
+            /*else if (m_fellAngle < m_angle - m_fellAmplitude)
             {
                 m_swingingSpeed += 0.1f;
             }*/
 
             // set the gyro last position
-            GL.glTranslatef(CubeWidth / 2.0f, CubeWidth / 2.0f, 0.0f);
-            GL.glRotatef(m_fellAngle + m_swingingSpeed, 0.0f, 0.0f, 1.0f);
-            GL.glTranslatef(-CubeWidth / 2.0f, -CubeWidth / 2.0f, 0.0f);
+            GL.glTranslatef(CubeWidth / 2.0f, 0.0f, CubeDepth / 2.0f);
+            GL.glRotatef(m_angle, 0.0f, -1.0f, 0.0f);
+            GL.glTranslatef(-CubeWidth / 2.0f, 0.0f, -CubeDepth / 2.0f);
+            GL.glRotatef(m_fellAngle, 1.0f, 0.0f, 0.0f);
+
+            float j = 0;
+
+            GL.glTranslatef(CubeWidth / 2.0f, 0.0f, CubeDepth / 2.0f);
+            GL.glRotatef(j += 0.5f, 0.0f, 1.0f, 0.0f);
+            GL.glTranslatef(-CubeWidth / 2.0f, 0.0f, -CubeDepth / 2.0f);
 
             //m_fallingAngle += 0.1f;
-            GL.glRotatef(m_fallingAngle, 0.0f, 1.0f, 0.0f);
 
 
             if (m_fellAngle % 90.0f < 1 && m_fellAngle % 90.0f > -1)
@@ -290,7 +294,7 @@ namespace OpenGL
                 m_xRotate += 10.0f;
             }
 
-            GL.glRotatef(m_xRotate, 1.0f, 1.0f, 0.0f);
+            
 
             //m_angle += 5f;
 
@@ -300,11 +304,11 @@ namespace OpenGL
             //GL.glRotatef(m_swingingAngle, 0.0f, m_swingingDirection, 0.0f);
 
 
-            if (m_swingingSpeed > 0)
-            {
+            //if (m_swingingSpeed > 0)
+            //{
             // draw the gyro
             DrawAll();
-            }
+            //}
 
 
             GL.glFlush();

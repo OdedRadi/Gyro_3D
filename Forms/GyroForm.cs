@@ -7,19 +7,21 @@ namespace Gyro_3D
 	public partial class GyroForm : Form
 	{
 		private gyroOGL gyroGL;
+        private bool gyroFell;
 
 		public GyroForm()
 		{
 			InitializeComponent();
 			gyroGL = new gyroOGL(drawPanel);
-            gyroGL.gyroFellEvent += GyroGL_gyroFellEvent;
-
+            gyroGL.GyroFellEvent += GyroGL_gyroFellEvent;
+            gyroFell = false;
         }
 
         private void GyroGL_gyroFellEvent()
         {
             timerRotating.Enabled = false;
             timerSwinging.Enabled = true;
+            gyroFell = true;
             timerSwinging.Start();
         }
 
@@ -52,11 +54,20 @@ namespace Gyro_3D
 
 		private void buttonRun_Click(object sender, EventArgs e)
 		{
-			timerRotating.Enabled = !timerRotating.Enabled;
-			if (timerRotating.Enabled)
+            if (gyroFell)
+            {
+                timerSwinging.Enabled = !timerSwinging.Enabled;
+            }
+            else
+            {
+                timerRotating.Enabled = !timerRotating.Enabled;
+            }
+
+            if (timerRotating.Enabled)
 				buttonRun.Text = "Stop";
 			else
 				buttonRun.Text = "Run";
+
 			label1.Text = "Delay = " + hScrollBarDelay.Value;
 		}
 
