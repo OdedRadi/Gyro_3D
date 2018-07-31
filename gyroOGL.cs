@@ -45,7 +45,7 @@ namespace OpenGL
             Height = m_control.Height;
             InitializeGL();
 
-            CubeHeight = 1.5f;
+            CubeHeight = 1.0f;
             CubeWidth = 1.0f;
             CubeDepth = 1.0f;
             PrismHeight = 0.7f;
@@ -412,7 +412,7 @@ namespace OpenGL
                 Bitmap image = new Bitmap(bmpFilesPath[i]);
                 image.RotateFlip(RotateFlipType.RotateNoneFlipY); //Y axis in Windows is directed downwards, while in OpenGL-upwards
 
-                if (i == 0 || i == 3)
+                if (i == 0 || i == 3) // instead of drawing the texture in different way in drawSquareSurface, we flip here the texture
                 {
                     image.RotateFlip(RotateFlipType.RotateNoneFlipX);
                 }
