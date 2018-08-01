@@ -14,12 +14,39 @@ namespace OpenGL
             Z
         }
 
-        private Control m_control;
+        private enum eGyroState
+        {
+            Rotating,
+            Slowing,
+            Stoping
+        }
 
-        private float m_angle = 0.0f;
-        private float m_rotatingSpeed = 20.0f;
+        private Control m_control;
+        private eGyroState m_gyroState = eGyroState.Rotating;
+
+        private float m_rotatingAngle = 0.0f;
+
         private float m_fallingAngle = 1.0f;
-        private float m_fallingFactor = 0.5f;
+
+        private const float m_rotatingSpeed = 20.0f;
+        private const float m_fallingFactor = 0.05f;
+
+        private float m_rotatingSlowFactor = 1.0f;
+        private float m_xAxisFellAngle;
+        private float m_yAxisFellAngle;
+
+        private float m_swingingDirection = 1.0f;
+        private float m_slowingAngle;
+        private float m_slowingSpeed = 20.0f;
+        private float m_slowingSlowFactor = 0.05f;
+        private float m_swingingAmplitude = 30.0f;
+        private float m_swingingAmplitudeDecrease = 5.0f;
+        private float m_stopingSlowFactor = 0.005f;
+        private float m_startStopingSpeed = 1.5f;
+
+        private float m_startedStopingAngle;
+
+
         private int Width { get; set; }
         private int Height { get; set; }
 
@@ -211,7 +238,7 @@ namespace OpenGL
             GL.glEnd();
         }
 
-        public void DrawRotating()
+        public void Draw()
         {
             if (m_uint_DC == 0 || m_uint_RC == 0)
                 return;
@@ -221,21 +248,17 @@ namespace OpenGL
 
             GL.glTranslatef(0.0f, 0.0f, -3.0f); // Translate 3 Units Into The Screen
 
-            // make the gyro turn around itself
-            m_angle += m_rotatingSpeed;
-            GL.glTranslatef(CubeWidth / 2.0f, 0.0f, CubeDepth / 2.0f);
-            GL.glRotatef(m_angle, 0.0f, -1.0f, 0.0f);
-            GL.glTranslatef(-CubeWidth / 2.0f, 0.0f, -CubeDepth / 2.0f);
-
-            // the gyro loose power
-            GL.glRotatef(m_fallingAngle, 1.0f, 0.0f, 0.0f);
-            m_angle -= m_fallingFactor * m_rotatingSpeed;
-            m_fallingAngle += m_fallingFactor;
-
-            if (m_fallingAngle >= 45)
+            switch (m_gyroState)
             {
-                m_fellAngle = m_fallingAngle % 360.0f;
-                GyroFellEvent.Invoke(); // this event handled by GyroForm to stop drawRotating, and start drawSwinging
+                case eGyroState.Rotating:
+                    rotatingCalc();
+                    break;
+                case eGyroState.Slowing:
+                    slowingCalc();
+                    break;
+                case eGyroState.Stoping:
+                    stopingCalc();
+                    break;
             }
 
             // draw the gyro
@@ -246,74 +269,73 @@ namespace OpenGL
             WGL.wglSwapBuffers(m_uint_DC);
         }
 
-        private float m_swingingDirection = 1.0f;
-        private float m_swingingSpeed = 10.0f;
-        private float m_fellAngle;
-        private float m_fellAmplitude = 0.2f;
-        private float m_xRotate = 0.0f;
-
-        public void DrawSwinging()
+        private void rotatingCalc()
         {
-            if (m_uint_DC == 0 || m_uint_RC == 0)
-                return;
-
-            GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-            GL.glLoadIdentity();
-
-            GL.glTranslatef(0.0f, 0.0f, -3.0f); // Translate 3 Units Into The Screen
-
-            //m_fellAngle += m_swingingSpeed;
-            m_swingingSpeed -= 0.05f;
-            m_fellAngle += 0.1f;
-            /*if (m_fellAngle + m_swingingSpeed > m_fellAngle + m_fellAmplitude)
-            {
-                m_swingingDirection *= -1;
-            }*/
-            /*else if (m_fellAngle < m_angle - m_fellAmplitude)
-            {
-                m_swingingSpeed += 0.1f;
-            }*/
-
-            // set the gyro last position
+            // make the gyro turn around itself
+            m_rotatingAngle += m_rotatingSpeed;
             GL.glTranslatef(CubeWidth / 2.0f, 0.0f, CubeDepth / 2.0f);
-            GL.glRotatef(m_angle, 0.0f, -1.0f, 0.0f);
-            GL.glTranslatef(-CubeWidth / 2.0f, 0.0f, -CubeDepth / 2.0f);
-            GL.glRotatef(m_fellAngle, 1.0f, 0.0f, 0.0f);
-
-            float j = 0;
-
-            GL.glTranslatef(CubeWidth / 2.0f, 0.0f, CubeDepth / 2.0f);
-            GL.glRotatef(j += 0.5f, 0.0f, 1.0f, 0.0f);
+            GL.glRotatef(m_rotatingAngle, 0.0f, -1.0f, 0.0f);
             GL.glTranslatef(-CubeWidth / 2.0f, 0.0f, -CubeDepth / 2.0f);
 
-            //m_fallingAngle += 0.1f;
+            // the gyro loose power
+            GL.glRotatef(m_fallingAngle, 1.0f, 0.0f, 0.0f);
+            m_rotatingAngle -= m_rotatingSlowFactor;
+            m_fallingAngle += m_fallingFactor;
 
-
-            if (m_fellAngle % 90.0f < 1 && m_fellAngle % 90.0f > -1)
+            if (m_fallingAngle >= 45)
             {
-                m_xRotate += 10.0f;
+                m_yAxisFellAngle = m_rotatingAngle % 360.0f;
+                m_xAxisFellAngle = m_fallingAngle % 360.0f;
+                //GyroFellEvent.Invoke(); // this event handled by GyroForm to stop drawRotating, and start drawSwinging
+                m_gyroState = eGyroState.Slowing;
+            }
+        }
+
+        private void slowingCalc()
+        {
+            // calc slowing angle
+            m_slowingAngle += m_slowingSpeed;
+
+            // set the gyro last position with swinging angle
+            GL.glTranslatef(CubeWidth / 2.0f, 0.0f, CubeDepth / 2.0f);
+            GL.glRotatef(m_yAxisFellAngle + m_slowingAngle, 0.0f, -1.0f, 0.0f);
+            GL.glTranslatef(-CubeWidth / 2.0f, 0.0f, -CubeDepth / 2.0f);
+            GL.glRotatef(m_xAxisFellAngle, 1.0f, 0.0f, 0.0f);
+
+            m_slowingSpeed -= m_slowingSlowFactor; // slow down is linear
+
+            if (m_slowingSpeed < m_startStopingSpeed)
+            {
+                m_startedStopingAngle = m_slowingAngle;
+                m_gyroState = eGyroState.Stoping;
+            }
+        }
+
+        private void stopingCalc()
+        {
+            // calc slowing angle
+            m_slowingAngle += m_slowingSpeed * m_swingingDirection;
+
+            // set the gyro last position with swinging angle
+            GL.glTranslatef(CubeWidth / 2.0f, 0.0f, CubeDepth / 2.0f);
+            GL.glRotatef(m_yAxisFellAngle + m_slowingAngle, 0.0f, -1.0f, 0.0f);
+            GL.glTranslatef(-CubeWidth / 2.0f, 0.0f, -CubeDepth / 2.0f);
+            GL.glRotatef(m_xAxisFellAngle, 1.0f, 0.0f, 0.0f);
+
+            m_slowingSpeed -= m_stopingSlowFactor;
+
+            float swingedAngle = (m_slowingAngle - m_startedStopingAngle);
+
+            if (swingedAngle * m_swingingDirection > m_swingingAmplitude)
+            {
+                m_swingingDirection *= -1; // swing to the other side
+                m_swingingAmplitude -= m_swingingAmplitudeDecrease; // swinging amlitude is decrease every swinging direction change
             }
 
-            
-
-            //m_angle += 5f;
-
-            //m_swingingAngle += 0.1f;
-            //m_swingingDirection *= -1.0f;
-
-            //GL.glRotatef(m_swingingAngle, 0.0f, m_swingingDirection, 0.0f);
-
-
-            //if (m_swingingSpeed > 0)
-            //{
-            // draw the gyro
-            DrawAll();
-            //}
-
-
-            GL.glFlush();
-
-            WGL.wglSwapBuffers(m_uint_DC);
+            if (m_slowingSpeed <= 0)
+            {
+                m_slowingSpeed = 0; // continue drawing, but the slowing angle will not changed
+            }
         }
 
         protected virtual void InitializeGL()
@@ -373,7 +395,7 @@ namespace OpenGL
             //!!!!!!!
 
             initRenderingGL();
-            DrawRotating();
+            Draw();
         }
 
         protected virtual void initRenderingGL()

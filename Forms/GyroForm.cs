@@ -27,23 +27,23 @@ namespace Gyro_3D
 
         private void timerRotating_Tick(object sender, EventArgs e)
 		{
-			gyroGL.DrawRotating();
+			gyroGL.Draw();
 		}
 
         private void timerSwinging_Tick(object sender, EventArgs e)
         {
-            gyroGL.DrawSwinging();
+            //gyroGL.DrawSwinging();
         }
 
         private void timerRepaint_Tick(object sender, EventArgs e)
 		{
-			gyroGL.DrawRotating();
+			gyroGL.Draw();
 			timerRepaint.Enabled = false;
 		}
 
 		private void buttonStep_Click(object sender, EventArgs e)
 		{
-			gyroGL.DrawRotating();
+			gyroGL.Draw();
 		}
 
 		private void buttonWider_Click(object sender, EventArgs e)
@@ -79,7 +79,7 @@ namespace Gyro_3D
 
 		private void drawPanel_Paint(object sender, PaintEventArgs e)
 		{
-			gyroGL.DrawRotating();
+			gyroGL.Draw();
 		}
 
 		private void drawPanel_Resize(object sender, EventArgs e)
