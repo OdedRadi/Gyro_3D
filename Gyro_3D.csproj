@@ -52,6 +52,7 @@
       <DependentUpon>GyroForm.cs</DependentUpon>
     </Compile>
     <Compile Include="OpenGL_API\GLU.cs" />
+    <Compile Include="OpenGL_API\GLUT.cs" />
     <Compile Include="OpenGL_API\OpenGL.cs" />
     <Compile Include="OpenGL_API\WGL.cs" />
     <Compile Include="Program.cs" />
