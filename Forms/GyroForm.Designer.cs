@@ -38,8 +38,8 @@
 			this.timerRun = new System.Windows.Forms.Timer(this.components);
 			this.timerRepaint = new System.Windows.Forms.Timer(this.components);
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.scrollBarPrismRadius = new System.Windows.Forms.HScrollBar();
-			this.scrollBarPrismZSize = new System.Windows.Forms.HScrollBar();
+			this.scrollBarCylinderRadius = new System.Windows.Forms.HScrollBar();
+			this.scrollBarCylinderZSize = new System.Windows.Forms.HScrollBar();
 			this.scrollBarPyramidZSize = new System.Windows.Forms.HScrollBar();
 			this.scrollBarCubeZSize = new System.Windows.Forms.HScrollBar();
 			this.scrollBarGyroRadius = new System.Windows.Forms.HScrollBar();
@@ -118,7 +118,7 @@
 			this.drawPanel.Size = new System.Drawing.Size(418, 334);
 			this.drawPanel.TabIndex = 12;
 			// 
-			// timerRotating
+			// timerRun
 			// 
 			this.timerRun.Interval = 10;
 			this.timerRun.Tick += new System.EventHandler(this.timerRotating_Tick);
@@ -131,8 +131,8 @@
 			// groupBox1
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBox1.Controls.Add(this.scrollBarPrismRadius);
-			this.groupBox1.Controls.Add(this.scrollBarPrismZSize);
+			this.groupBox1.Controls.Add(this.scrollBarCylinderRadius);
+			this.groupBox1.Controls.Add(this.scrollBarCylinderZSize);
 			this.groupBox1.Controls.Add(this.scrollBarPyramidZSize);
 			this.groupBox1.Controls.Add(this.scrollBarCubeZSize);
 			this.groupBox1.Controls.Add(this.scrollBarGyroRadius);
@@ -148,29 +148,29 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Cube Size";
 			// 
-			// scrollBarPrismRadius
+			// scrollBarCylinderRadius
 			// 
-			this.scrollBarPrismRadius.LargeChange = 1;
-			this.scrollBarPrismRadius.Location = new System.Drawing.Point(78, 120);
-			this.scrollBarPrismRadius.Maximum = 30;
-			this.scrollBarPrismRadius.Minimum = 10;
-			this.scrollBarPrismRadius.Name = "scrollBarPrismRadius";
-			this.scrollBarPrismRadius.Size = new System.Drawing.Size(118, 13);
-			this.scrollBarPrismRadius.TabIndex = 6;
-			this.scrollBarPrismRadius.Value = 10;
-			this.scrollBarPrismRadius.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scrollBarPrismRadius_Scroll);
+			this.scrollBarCylinderRadius.LargeChange = 1;
+			this.scrollBarCylinderRadius.Location = new System.Drawing.Point(78, 120);
+			this.scrollBarCylinderRadius.Maximum = 30;
+			this.scrollBarCylinderRadius.Minimum = 10;
+			this.scrollBarCylinderRadius.Name = "scrollBarCylinderRadius";
+			this.scrollBarCylinderRadius.Size = new System.Drawing.Size(118, 13);
+			this.scrollBarCylinderRadius.TabIndex = 6;
+			this.scrollBarCylinderRadius.Value = 10;
+			this.scrollBarCylinderRadius.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scrollBarCylinderRadius_Scroll);
 			// 
-			// scrollBarPrismZSize
+			// scrollBarCylinderZSize
 			// 
-			this.scrollBarPrismZSize.LargeChange = 1;
-			this.scrollBarPrismZSize.Location = new System.Drawing.Point(78, 103);
-			this.scrollBarPrismZSize.Maximum = 30;
-			this.scrollBarPrismZSize.Minimum = 10;
-			this.scrollBarPrismZSize.Name = "scrollBarPrismZSize";
-			this.scrollBarPrismZSize.Size = new System.Drawing.Size(118, 13);
-			this.scrollBarPrismZSize.TabIndex = 7;
-			this.scrollBarPrismZSize.Value = 10;
-			this.scrollBarPrismZSize.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scrollBarPrismHeight_Scroll);
+			this.scrollBarCylinderZSize.LargeChange = 1;
+			this.scrollBarCylinderZSize.Location = new System.Drawing.Point(78, 103);
+			this.scrollBarCylinderZSize.Maximum = 30;
+			this.scrollBarCylinderZSize.Minimum = 10;
+			this.scrollBarCylinderZSize.Name = "scrollBarCylinderZSize";
+			this.scrollBarCylinderZSize.Size = new System.Drawing.Size(118, 13);
+			this.scrollBarCylinderZSize.TabIndex = 7;
+			this.scrollBarCylinderZSize.Value = 10;
+			this.scrollBarCylinderZSize.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scrollBarCylinderHeight_Scroll);
 			// 
 			// scrollBarPyramidZSize
 			// 
@@ -213,18 +213,18 @@
 			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(6, 120);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(71, 13);
+			this.label7.Size = new System.Drawing.Size(83, 13);
 			this.label7.TabIndex = 4;
-			this.label7.Text = "Prism Radius:";
+			this.label7.Text = "Cylinder Radius:";
 			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(6, 103);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(45, 13);
+			this.label6.Size = new System.Drawing.Size(57, 13);
 			this.label6.TabIndex = 3;
-			this.label6.Text = "Prism Z:";
+			this.label6.Text = "Cylinder Z:";
 			// 
 			// label5
 			// 
@@ -286,8 +286,8 @@
 		private System.Windows.Forms.Timer timerRun;
 		private System.Windows.Forms.Timer timerRepaint;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.HScrollBar scrollBarPrismRadius;
-        private System.Windows.Forms.HScrollBar scrollBarPrismZSize;
+        private System.Windows.Forms.HScrollBar scrollBarCylinderRadius;
+        private System.Windows.Forms.HScrollBar scrollBarCylinderZSize;
         private System.Windows.Forms.HScrollBar scrollBarPyramidZSize;
         private System.Windows.Forms.HScrollBar scrollBarCubeZSize;
         private System.Windows.Forms.HScrollBar scrollBarGyroRadius;

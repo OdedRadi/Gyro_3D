@@ -88,15 +88,15 @@ namespace Gyro_3D
             gyroGL.PyramidHeight = e.NewValue / 12f;
         }
 
-        private void scrollBarPrismHeight_Scroll(object sender, ScrollEventArgs e)
+        private void scrollBarCylinderHeight_Scroll(object sender, ScrollEventArgs e)
         {
-            gyroGL.PrismHeight = e.NewValue / 20f;
+            gyroGL.CylinderHeight = e.NewValue / 20f;
         }
 
-        private void scrollBarPrismRadius_Scroll(object sender, ScrollEventArgs e)
+        private void scrollBarCylinderRadius_Scroll(object sender, ScrollEventArgs e)
         {
-            gyroGL.PrismWidth = e.NewValue / 50f;
-            gyroGL.PrismDepth = e.NewValue / 50f;
+            gyroGL.CylinderRadius = e.NewValue / 75f;
+            gyroGL.CylinderRadius = e.NewValue / 75f;
         }
     }
 }

@@ -55,9 +55,8 @@ namespace OpenGL
         public float CubeHeight { get; set; }
         public float CubeWidth { get; set; }
         public float CubeDepth { get; set; }
-        public float PrismHeight { get; set; }      
-        public float PrismWidth { get; set; }
-        public float PrismDepth { get; set; }
+		public float CylinderRadius { get; set; }
+		public float CylinderHeight { get; set; }
         public float PyramidHeight { get; set; }
         public float PyramidWidth { get; set; }
         public float PyramidDepth { get; set; }
@@ -74,9 +73,8 @@ namespace OpenGL
             CubeHeight = 1.0f;
             CubeWidth = 1.0f;
             CubeDepth = 1.0f;
-            PrismHeight = 0.7f;
-            PrismWidth = 0.2f;
-            PrismDepth = 0.2f;
+			CylinderRadius = 0.1f;
+			CylinderHeight = 0.7f;
             PyramidHeight = 0.7f;
             PyramidWidth = 1.0f;
             PyramidDepth = 1.0f;
@@ -114,17 +112,19 @@ namespace OpenGL
             GL.glColor3f(0.905f, 0.694f, 0.148f);
             GL.glRotatef(180.0f, 1.0f, 0.0f, 1.0f); // rotate the position to draw the pyramid at vertical inversion
             drawGyroPyramid();
-            GL.glRotatef(180.0f, 1.0f, 0.0f, 1.0f); // return to previous position
+            GL.glRotatef(180.0f, -1.0f, 0.0f, -1.0f); // return to previous position
 
-            // translate the position to draw the prism on the top of the cube
-            float xPrismOrigin = (CubeWidth / 2 - PrismWidth / 2);
-            float yPrismOrigin = CubeHeight;
-            float zPrismOrigin = (CubeDepth / 2 - PrismDepth / 2);
-
-            GL.glTranslatef(xPrismOrigin, yPrismOrigin, zPrismOrigin);
-            drawGyroPrism();
-            GL.glTranslatef(-xPrismOrigin, -yPrismOrigin, -zPrismOrigin); // return to previous position
-        }
+            // translate the position to draw the cylinder on the top of the cube
+            float xCylinderOrigin = CubeWidth / 2;
+            float yCylinderOrigin = CubeHeight;
+            float zCylinderOrigin = CubeDepth / 2;
+			
+			GL.glTranslatef(xCylinderOrigin, yCylinderOrigin, zCylinderOrigin);
+			GL.glRotatef(90, -1, 0, 0);
+			drawGyroCylinder();
+			GL.glRotatef(90, 1, 0, 0);
+			GL.glTranslatef(-xCylinderOrigin, -yCylinderOrigin, -zCylinderOrigin); // return to previous position
+		}
 
         private void drawAxes()
         {
@@ -145,10 +145,21 @@ namespace OpenGL
             GL.glEnd();
         }
 
-        private void drawGyroPrism()
+        private void drawGyroCylinder()
         {
-            drawGenericCube(PrismWidth, PrismHeight, PrismDepth);
-        }
+			GLUquadric GluQuadric;
+			GluQuadric = GLU.gluNewQuadric(); //do not forget to call gluDeleteQuadric at the end
+											  //base radius
+											  //top radius
+											  //height
+											  //slices
+											  //stacks
+			//GL.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+            GLU.gluCylinder(GluQuadric, CylinderRadius, CylinderRadius, CylinderHeight, 16, 16);
+			//GL.glRotatef(90.0f, -1.0f, 0.0f, 0.0f);
+
+			GLU.gluDeleteQuadric(GluQuadric);
+		}
 
         private void drawGyroCube()
         {
@@ -239,7 +250,12 @@ namespace OpenGL
 
         public void Draw()
         {
-            if (m_uint_DC == 0 || m_uint_RC == 0)
+			//float[] pos = new float[4];
+			//pos[0] = 10; pos[1] = 10; pos[2] = 10; pos[3] = 1;
+			//GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, pos);
+			//GL.glDisable(GL.GL_LIGHTING);
+
+			if (m_uint_DC == 0 || m_uint_RC == 0)
                 return;
 
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
@@ -260,8 +276,11 @@ namespace OpenGL
                     break;
             }
 
-            // draw the gyro
-            DrawAll();
+			// draw the gyro
+			//GL.glEnable(GL.GL_LIGHTING);
+			//GL.glEnable(GL.GL_LIGHT0);
+			//GL.glEnable(GL.GL_COLOR_MATERIAL);
+			DrawAll();
 
             GL.glFlush();
 
