@@ -24,28 +24,29 @@ namespace OpenGL
         private Control m_control;
         private eGyroState m_gyroState = eGyroState.Rotating;
 
+        private float m_fallingAngle = 0.0f;
         private float m_rotatingAngle = 0.0f;
+        private float m_slowingAngle = 0.0f;
+        private float m_stopingAngle = 0.0f;
 
-        private float m_fallingAngle = 1.0f;
+        private float m_rotatingSpeed = 20.0f;
+        private float m_slowingSpeed = 20.0f;
+        private float m_stopingSpeed = 10.0f;
 
-        private const float m_rotatingSpeed = 20.0f;
         private const float m_fallingFactor = 0.05f;
+        private const float m_slowingSlowFactor = 0.05f;
+        private const float m_stopingSlowFactor = 0.005f;
+        private const float m_rotatingSlowFactor = 0.005f;
 
-        private float m_rotatingSlowFactor = 1.0f;
         private float m_xAxisFellAngle;
         private float m_yAxisFellAngle;
 
-        private float m_swingingDirection = 1.0f;
-        private float m_slowingAngle;
-        private float m_slowingSpeed = 20.0f;
-        private float m_slowingSlowFactor = 0.05f;
-        private float m_swingingAmplitude = 30.0f;
-        private float m_swingingAmplitudeDecrease = 5.0f;
-        private float m_stopingSlowFactor = 0.005f;
-        private float m_startStopingSpeed = 1.5f;
-
+        private const float m_startStopingSpeed = 1.5f;
         private float m_startedStopingAngle;
 
+        private const float m_swingingAmplitudeDecrease = 5.0f;
+        private float m_swingingAmplitude = 30.0f;
+        private float m_swingingDirection = 1.0f;
 
         private int Width { get; set; }
         private int Height { get; set; }
@@ -251,13 +252,13 @@ namespace OpenGL
             switch (m_gyroState)
             {
                 case eGyroState.Rotating:
-                    rotatingCalc();
+                    gyroRotatingTransform();
                     break;
                 case eGyroState.Slowing:
-                    slowingCalc();
+                    gyroSlowingTransform();
                     break;
                 case eGyroState.Stoping:
-                    stopingCalc();
+                    gyroStopingTransform();
                     break;
             }
 
@@ -269,7 +270,7 @@ namespace OpenGL
             WGL.wglSwapBuffers(m_uint_DC);
         }
 
-        private void rotatingCalc()
+        private void gyroRotatingTransform()
         {
             // make the gyro turn around itself
             m_rotatingAngle += m_rotatingSpeed;
@@ -279,7 +280,7 @@ namespace OpenGL
 
             // the gyro loose power
             GL.glRotatef(m_fallingAngle, 1.0f, 0.0f, 0.0f);
-            m_rotatingAngle -= m_rotatingSlowFactor;
+            m_rotatingSpeed -= m_rotatingSlowFactor;
             m_fallingAngle += m_fallingFactor;
 
             if (m_fallingAngle >= 45)
@@ -291,7 +292,7 @@ namespace OpenGL
             }
         }
 
-        private void slowingCalc()
+        private void gyroSlowingTransform()
         {
             // calc slowing angle
             m_slowingAngle += m_slowingSpeed;
@@ -307,24 +308,26 @@ namespace OpenGL
             if (m_slowingSpeed < m_startStopingSpeed)
             {
                 m_startedStopingAngle = m_slowingAngle;
+                m_stopingAngle = m_slowingAngle;
+                m_stopingSpeed = m_slowingSpeed;
                 m_gyroState = eGyroState.Stoping;
             }
         }
 
-        private void stopingCalc()
+        private void gyroStopingTransform()
         {
             // calc slowing angle
-            m_slowingAngle += m_slowingSpeed * m_swingingDirection;
+            m_stopingAngle += m_stopingSpeed * m_swingingDirection;
 
             // set the gyro last position with swinging angle
             GL.glTranslatef(CubeWidth / 2.0f, 0.0f, CubeDepth / 2.0f);
-            GL.glRotatef(m_yAxisFellAngle + m_slowingAngle, 0.0f, -1.0f, 0.0f);
+            GL.glRotatef(m_yAxisFellAngle + m_stopingAngle, 0.0f, -1.0f, 0.0f);
             GL.glTranslatef(-CubeWidth / 2.0f, 0.0f, -CubeDepth / 2.0f);
             GL.glRotatef(m_xAxisFellAngle, 1.0f, 0.0f, 0.0f);
 
-            m_slowingSpeed -= m_stopingSlowFactor;
+            m_stopingSpeed -= m_stopingSlowFactor;
 
-            float swingedAngle = (m_slowingAngle - m_startedStopingAngle);
+            float swingedAngle = (m_stopingAngle - m_startedStopingAngle);
 
             if (swingedAngle * m_swingingDirection > m_swingingAmplitude)
             {
@@ -332,9 +335,9 @@ namespace OpenGL
                 m_swingingAmplitude -= m_swingingAmplitudeDecrease; // swinging amlitude is decrease every swinging direction change
             }
 
-            if (m_slowingSpeed <= 0)
+            if (m_stopingSpeed <= 0)
             {
-                m_slowingSpeed = 0; // continue drawing, but the slowing angle will not changed
+                m_stopingSpeed = 0; // continue drawing, but the slowing angle will not changed
             }
         }
 
