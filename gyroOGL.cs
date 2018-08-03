@@ -64,8 +64,6 @@ namespace OpenGL
 
         private uint[] m_textureList;
 
-        public event Action GyroFellEvent;
-
         public gyroOGL(Control control)
         {
             m_control = control;

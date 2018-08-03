@@ -13,27 +13,12 @@ namespace Gyro_3D
 		{
 			InitializeComponent();
 			gyroGL = new gyroOGL(drawPanel);
-            gyroGL.GyroFellEvent += GyroGL_gyroFellEvent;
             gyroFell = false;
         }
-
-        private void GyroGL_gyroFellEvent()
-        {
-            timerRotating.Enabled = false;
-            timerSwinging.Enabled = true;
-            gyroFell = true;
-            timerSwinging.Start();
-        }
-
         private void timerRotating_Tick(object sender, EventArgs e)
 		{
 			gyroGL.Draw();
 		}
-
-        private void timerSwinging_Tick(object sender, EventArgs e)
-        {
-            //gyroGL.DrawSwinging();
-        }
 
         private void timerRepaint_Tick(object sender, EventArgs e)
 		{
@@ -54,16 +39,9 @@ namespace Gyro_3D
 
 		private void buttonRun_Click(object sender, EventArgs e)
 		{
-            if (gyroFell)
-            {
-                timerSwinging.Enabled = !timerSwinging.Enabled;
-            }
-            else
-            {
-                timerRotating.Enabled = !timerRotating.Enabled;
-            }
-
-            if (timerRotating.Enabled)
+            timerRun.Enabled = !timerRun.Enabled;
+           
+            if (timerRun.Enabled)
 				buttonRun.Text = "Stop";
 			else
 				buttonRun.Text = "Run";
@@ -73,7 +51,7 @@ namespace Gyro_3D
 
 		private void hScrollBarDelay_Scroll(object sender, ScrollEventArgs e)
 		{
-			timerRotating.Interval = hScrollBarDelay.Value;
+			timerRun.Interval = hScrollBarDelay.Value;
 			label1.Text = "Delay = " + hScrollBarDelay.Value;
 		}
 
