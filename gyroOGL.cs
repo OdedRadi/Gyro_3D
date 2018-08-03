@@ -177,7 +177,7 @@ namespace OpenGL
         {
             GL.glColor3f(1.0f, 1.0f, 1.0f);
             GL.glEnable(GL.GL_TEXTURE_2D);
-            GL.glDisable(GL.GL_LIGHTING);
+            //GL.glDisable(GL.GL_LIGHTING);
 
             drawGenericCube(CubeWidth, CubeHeight, CubeDepth);
 
@@ -262,10 +262,10 @@ namespace OpenGL
 
         public void Draw()
         {
-			//float[] pos = new float[4];
-			//pos[0] = 10; pos[1] = 10; pos[2] = 10; pos[3] = 1;
-			//GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, pos);
-			//GL.glDisable(GL.GL_LIGHTING);
+			/*float[] pos = new float[4];
+			pos[0] = 10; pos[1] = 10; pos[2] = 10; pos[3] = 1;
+			GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, pos);
+			GL.glDisable(GL.GL_LIGHTING);*/
 
 			if (m_uint_DC == 0 || m_uint_RC == 0)
                 return;
@@ -274,7 +274,7 @@ namespace OpenGL
             GL.glLoadIdentity();
 
             GL.glTranslatef(0.0f, 0.0f, -3.0f); // Translate 3 Units Into The Screen
-			GL.glRotated(90, 1, 0, 0);
+
             switch (m_gyroState)
             {
                 case eGyroState.Rotating:
@@ -289,9 +289,9 @@ namespace OpenGL
             }
 
 			// draw the gyro
-			//GL.glEnable(GL.GL_LIGHTING);
-			//GL.glEnable(GL.GL_LIGHT0);
-			//GL.glEnable(GL.GL_COLOR_MATERIAL);
+			/*GL.glEnable(GL.GL_LIGHTING);
+			GL.glEnable(GL.GL_LIGHT0);
+			GL.glEnable(GL.GL_COLOR_MATERIAL);*/
 			DrawAll();
 
             GL.glFlush();
