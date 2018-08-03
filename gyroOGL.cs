@@ -120,9 +120,7 @@ namespace OpenGL
             float zCylinderOrigin = CubeDepth / 2;
 			
 			GL.glTranslatef(xCylinderOrigin, yCylinderOrigin, zCylinderOrigin);
-			GL.glRotatef(90, -1, 0, 0);
 			drawGyroCylinder();
-			GL.glRotatef(90, 1, 0, 0);
 			GL.glTranslatef(-xCylinderOrigin, -yCylinderOrigin, -zCylinderOrigin); // return to previous position
 		}
 
@@ -147,18 +145,32 @@ namespace OpenGL
 
         private void drawGyroCylinder()
         {
+			int cylinderSegements = 16;
+
+			// draw the cylinder
 			GLUquadric GluQuadric;
-			GluQuadric = GLU.gluNewQuadric(); //do not forget to call gluDeleteQuadric at the end
-											  //base radius
-											  //top radius
-											  //height
-											  //slices
-											  //stacks
-			//GL.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-            GLU.gluCylinder(GluQuadric, CylinderRadius, CylinderRadius, CylinderHeight, 16, 16);
-			//GL.glRotatef(90.0f, -1.0f, 0.0f, 0.0f);
+			GluQuadric = GLU.gluNewQuadric();
+											 
+			GL.glRotatef(90, -1, 0, 0); // the cylinder height is relative to z axis
+			GLU.gluCylinder(GluQuadric, CylinderRadius, CylinderRadius, CylinderHeight, cylinderSegements, cylinderSegements);
+			GL.glRotatef(90, 1, 0, 0);
 
 			GLU.gluDeleteQuadric(GluQuadric);
+
+			// draw cylinder cover
+			GL.glBegin(GL.GL_POLYGON);
+			
+			for (int i = 0; i < cylinderSegements; i++)
+			{
+				float theta = 2.0f * 3.1415926f * i / cylinderSegements; //get the current angle
+
+				float x = CylinderRadius * (float)Math.Cos(theta); //calculate the x component
+				float y = CylinderRadius * (float)Math.Sin(theta); //calculate the y component
+
+				GL.glVertex3f(x, CylinderHeight, y);
+			}
+			
+			GL.glEnd();
 		}
 
         private void drawGyroCube()
@@ -262,7 +274,7 @@ namespace OpenGL
             GL.glLoadIdentity();
 
             GL.glTranslatef(0.0f, 0.0f, -3.0f); // Translate 3 Units Into The Screen
-
+			GL.glRotated(90, 1, 0, 0);
             switch (m_gyroState)
             {
                 case eGyroState.Rotating:
