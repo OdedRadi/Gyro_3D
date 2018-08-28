@@ -29,9 +29,9 @@ namespace OpenGL
         private float m_slowingAngle = 0.0f;
         private float m_stopingAngle = 0.0f;
 
-        private float m_rotatingSpeed = 20.0f;
-        private float m_slowingSpeed = 20.0f;
-        private float m_stopingSpeed = 10.0f;
+        private float m_rotatingSpeed = 15.0f;
+        private float m_slowingSpeed = 15.0f;
+        private float m_stopingSpeed = 7.5f;
 
         private const float m_fallingFactor = 0.05f;
         private const float m_slowingSlowFactor = 0.05f;
@@ -103,25 +103,14 @@ namespace OpenGL
             get { return m_uint_RC; }
         }
 
-        protected void DrawAll()
+        private void drawGyro()
         {
-            // drawing the axes and the cube from the current position
-            drawAxes();
+            // drawing the cube from the current position
             drawGyroCube();
 
             GL.glColor3f(0.905f, 0.694f, 0.148f);
-            GL.glRotatef(180.0f, 1.0f, 0.0f, 1.0f); // rotate the position to draw the pyramid at vertical inversion
             drawGyroPyramid();
-            GL.glRotatef(180.0f, -1.0f, 0.0f, -1.0f); // return to previous position
-
-            // translate the position to draw the cylinder on the top of the cube
-            float xCylinderOrigin = CubeWidth / 2;
-            float yCylinderOrigin = CubeHeight;
-            float zCylinderOrigin = CubeDepth / 2;
-			
-			GL.glTranslatef(xCylinderOrigin, yCylinderOrigin, zCylinderOrigin);
 			drawGyroCylinder();
-			GL.glTranslatef(-xCylinderOrigin, -yCylinderOrigin, -zCylinderOrigin); // return to previous position
 		}
 
         private void drawAxes()
@@ -145,9 +134,17 @@ namespace OpenGL
 
         private void drawGyroCylinder()
         {
-			int cylinderSegements = 16;
+            GL.glPushMatrix();
+
+            // translate the position to draw the cylinder on the top of the cube
+            float xCylinderOrigin = CubeWidth / 2;
+            float yCylinderOrigin = CubeHeight;
+            float zCylinderOrigin = CubeDepth / 2;
+
+            GL.glTranslatef(xCylinderOrigin, yCylinderOrigin, zCylinderOrigin);
 
 			// draw the cylinder
+            int cylinderSegements = 16;
 			GLUquadric GluQuadric;
 			GluQuadric = GLU.gluNewQuadric();
 											 
@@ -171,63 +168,75 @@ namespace OpenGL
 			}
 			
 			GL.glEnd();
-		}
+
+            GL.glPopMatrix();
+        }
 
         private void drawGyroCube()
         {
             GL.glColor3f(1.0f, 1.0f, 1.0f);
             GL.glEnable(GL.GL_TEXTURE_2D);
-            //GL.glDisable(GL.GL_LIGHTING);
 
-            drawGenericCube(CubeWidth, CubeHeight, CubeDepth);
+            GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[2]);
+            GL.glNormal3f(-1, 0, 0);
+            drawSquareSurface(0, CubeHeight, CubeDepth, eAxis.X);
+
+            GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[0]);
+            GL.glNormal3f(1, 0, 0);
+            drawSquareSurface(CubeWidth, CubeHeight, CubeDepth, eAxis.X);
+
+            GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[3]);
+            GL.glNormal3f(0, 0, -1);
+            drawSquareSurface(CubeWidth, CubeHeight, 0, eAxis.Z);
+
+            GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[1]);
+            GL.glNormal3f(0, 0, 1);
+            drawSquareSurface(CubeWidth, CubeHeight, CubeDepth, eAxis.Z);
+
+            drawSquareSurface(CubeWidth, 0, CubeDepth, eAxis.Y);
+            GL.glNormal3f(0, -1, 0);
+            drawSquareSurface(CubeWidth, CubeHeight, CubeDepth, eAxis.Y);
+            GL.glNormal3f(0, 1, 0);
 
             GL.glDisable(GL.GL_TEXTURE_2D);
         }
 
         private void drawGyroPyramid()
         {
+            GL.glPushMatrix();
+            GL.glScalef(1.0f, -1.0f, 1.0f); // scale the position to draw the pyramid at vertical inversion
+
             drawSquareSurface(PyramidWidth, 0.0f, PyramidDepth, eAxis.Y);
 
             GL.glBegin(GL.GL_TRIANGLES);
 
             // first x axis
+            GL.glNormal3f(-0.81373f, 0.58124f, 0);
             GL.glVertex3f(0.0f, 0.0f, 0.0f);
             GL.glVertex3f(PyramidWidth / 2, PyramidHeight, PyramidDepth / 2);
             GL.glVertex3f(0.0f, 0.0f, PyramidDepth);
 
             // second x axis
+            GL.glNormal3f(0.81373f, 0.58124f, 0);
             GL.glVertex3f(PyramidWidth, 0.0f, 0.0f);
             GL.glVertex3f(PyramidWidth / 2, PyramidHeight, PyramidDepth / 2);
             GL.glVertex3f(PyramidWidth, 0.0f, PyramidDepth);
 
             // first Z axis
+            GL.glNormal3f(0, 0.58124f, -0.81373f);
             GL.glVertex3f(0.0f, 0.0f, 0.0f);
             GL.glVertex3f(PyramidWidth / 2, PyramidHeight, PyramidDepth / 2);
             GL.glVertex3f(PyramidWidth, 0.0f, 0.0f);
 
             // second Z axis
+            GL.glNormal3f(0, 0.58124f, 0.81373f);
             GL.glVertex3f(0.0f, 0.0f, PyramidDepth);
             GL.glVertex3f(PyramidWidth / 2, PyramidHeight, PyramidDepth / 2);
             GL.glVertex3f(PyramidWidth, 0.0f, PyramidDepth);
 
             GL.glEnd();
-        }
 
-        private void drawGenericCube(float width, float height, float depth)
-        {
-            // if there is no texture enabled, the glBindTexture do nothing
-            GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[2]);
-            drawSquareSurface(0, height, depth, eAxis.X);
-            GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[0]);
-            drawSquareSurface(width, height, depth, eAxis.X);
-
-            GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[3]);
-            drawSquareSurface(width, height, 0, eAxis.Z);
-            GL.glBindTexture(GL.GL_TEXTURE_2D, m_textureList[1]);
-            drawSquareSurface(width, height, depth, eAxis.Z);
-
-            drawSquareSurface(width, 0, depth, eAxis.Y);
-            drawSquareSurface(width, height, depth, eAxis.Y);
+            GL.glPopMatrix();
         }
 
         private void drawSquareSurface(float width, float height, float depth, eAxis axis)
@@ -262,11 +271,6 @@ namespace OpenGL
 
         public void Draw()
         {
-			/*float[] pos = new float[4];
-			pos[0] = 10; pos[1] = 10; pos[2] = 10; pos[3] = 1;
-			GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, pos);
-			GL.glDisable(GL.GL_LIGHTING);*/
-
 			if (m_uint_DC == 0 || m_uint_RC == 0)
                 return;
 
@@ -274,6 +278,8 @@ namespace OpenGL
             GL.glLoadIdentity();
 
             GL.glTranslatef(0.0f, 0.0f, -3.0f); // Translate 3 Units Into The Screen
+
+            createLightning();
 
             switch (m_gyroState)
             {
@@ -288,15 +294,35 @@ namespace OpenGL
                     break;
             }
 
-			// draw the gyro
-			/*GL.glEnable(GL.GL_LIGHTING);
-			GL.glEnable(GL.GL_LIGHT0);
-			GL.glEnable(GL.GL_COLOR_MATERIAL);*/
-			DrawAll();
+            //drawAxes();
+            drawGyro();
 
             GL.glFlush();
 
             WGL.wglSwapBuffers(m_uint_DC);
+        }
+
+        private void createLightning()
+        {
+            GL.glPushMatrix();
+
+            float[] lightPos = new float[4];
+			lightPos[0] = -2.0f; 
+            lightPos[1] = 1f; 
+            lightPos[2] = 0.8f; 
+            lightPos[3] = 1;
+
+            // draw light source as solid sphere
+            /*GL.glColor3f(1, 1, 1);
+            GL.glTranslatef(lightPos[0], lightPos[1], lightPos[2]);
+            GLUT.glutSolidSphere(0.1, 16, 16);*/
+
+            GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightPos);
+            GL.glEnable(GL.GL_LIGHTING);
+			GL.glEnable(GL.GL_LIGHT0);
+			GL.glEnable(GL.GL_COLOR_MATERIAL);
+
+            GL.glPopMatrix();
         }
 
         private void gyroRotatingTransform()
@@ -316,7 +342,6 @@ namespace OpenGL
             {
                 m_yAxisFellAngle = m_rotatingAngle % 360.0f;
                 m_xAxisFellAngle = m_fallingAngle % 360.0f;
-                //GyroFellEvent.Invoke(); // this event handled by GyroForm to stop drawRotating, and start drawSwinging
                 m_gyroState = eGyroState.Slowing;
             }
         }
@@ -345,7 +370,7 @@ namespace OpenGL
 
         private void gyroStopingTransform()
         {
-            // calc slowing angle
+            // calc stoping angle
             m_stopingAngle += m_stopingSpeed * m_swingingDirection;
 
             // set the gyro last position with swinging angle
@@ -366,7 +391,7 @@ namespace OpenGL
 
             if (m_stopingSpeed <= 0)
             {
-                m_stopingSpeed = 0; // continue drawing, but the slowing angle will not changed
+                m_stopingSpeed = 0; // continue drawing, but the gyro will not move
             }
         }
 
